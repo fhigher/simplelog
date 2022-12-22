@@ -25,28 +25,28 @@ var logNameMap = map[loglevel]string{
 	ERROR: "ERROR ",
 }
 
-type loggerWrap struct {
+type LoggerWrap struct {
 	out   io.WriteCloser
 	inner *log.Logger
 	level loglevel
 	path  string
 }
 
-func newSimpleLogger(out io.WriteCloser) *loggerWrap {
-	return &loggerWrap{
+func newSimpleLogger(out io.WriteCloser) *LoggerWrap {
+	return &LoggerWrap{
 		out:   out,
 		inner: log.New(out, "", log.Ldate|log.Ltime|log.Lshortfile),
 	}
 }
 
-func StdLogger() (*loggerWrap, error) {
+func StdLogger() *LoggerWrap {
 	lw := newSimpleLogger(os.Stdout)
 	lw.path = "stdout"
 
-	return lw, nil
+	return lw
 }
 
-func FileLogger(path string) (*loggerWrap, error) {
+func FileLogger(path string) (*LoggerWrap, error) {
 	fobj, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if nil != err {
 		return nil, err
@@ -57,23 +57,23 @@ func FileLogger(path string) (*loggerWrap, error) {
 	return lw, nil
 }
 
-func (lw *loggerWrap) GetPath() string {
+func (lw *LoggerWrap) GetPath() string {
 	return lw.path
 }
 
-func (lw *loggerWrap) SetLevel(level loglevel) {
+func (lw *LoggerWrap) SetLevel(level loglevel) {
 	lw.level = level
 }
 
-func (lw *loggerWrap) GetLevel() string {
+func (lw *LoggerWrap) GetLevel() string {
 	return logNameMap[lw.level]
 }
 
-func (lw *loggerWrap) Close() error {
+func (lw *LoggerWrap) Close() error {
 	return lw.out.Close()
 }
 
-func (lw *loggerWrap) Trace(v ...interface{}) {
+func (lw *LoggerWrap) Trace(v ...interface{}) {
 	if TRACE < lw.level {
 		return
 	}
@@ -81,7 +81,7 @@ func (lw *loggerWrap) Trace(v ...interface{}) {
 	lw.inner.Output(2, fmt.Sprint(v...))
 }
 
-func (lw *loggerWrap) Tracef(format string, v ...interface{}) {
+func (lw *LoggerWrap) Tracef(format string, v ...interface{}) {
 	if TRACE < lw.level {
 		return
 	}
@@ -89,7 +89,7 @@ func (lw *loggerWrap) Tracef(format string, v ...interface{}) {
 	lw.inner.Output(2, fmt.Sprintf(format, v...))
 }
 
-func (lw *loggerWrap) Debug(v ...interface{}) {
+func (lw *LoggerWrap) Debug(v ...interface{}) {
 	if DEBUG < lw.level {
 		return
 	}
@@ -97,7 +97,7 @@ func (lw *loggerWrap) Debug(v ...interface{}) {
 	lw.inner.Output(2, fmt.Sprint(v...))
 }
 
-func (lw *loggerWrap) Debugf(format string, v ...interface{}) {
+func (lw *LoggerWrap) Debugf(format string, v ...interface{}) {
 	if DEBUG < lw.level {
 		return
 	}
@@ -105,7 +105,7 @@ func (lw *loggerWrap) Debugf(format string, v ...interface{}) {
 	lw.inner.Output(2, fmt.Sprintf(format, v...))
 }
 
-func (lw *loggerWrap) Info(v ...interface{}) {
+func (lw *LoggerWrap) Info(v ...interface{}) {
 	if INFO < lw.level {
 		return
 	}
@@ -113,7 +113,7 @@ func (lw *loggerWrap) Info(v ...interface{}) {
 	lw.inner.Output(2, fmt.Sprint(v...))
 }
 
-func (lw *loggerWrap) Infof(format string, v ...interface{}) {
+func (lw *LoggerWrap) Infof(format string, v ...interface{}) {
 	if INFO < lw.level {
 		return
 	}
@@ -121,7 +121,7 @@ func (lw *loggerWrap) Infof(format string, v ...interface{}) {
 	lw.inner.Output(2, fmt.Sprintf(format, v...))
 }
 
-func (lw *loggerWrap) Warn(v ...interface{}) {
+func (lw *LoggerWrap) Warn(v ...interface{}) {
 	if WARN < lw.level {
 		return
 	}
@@ -129,7 +129,7 @@ func (lw *loggerWrap) Warn(v ...interface{}) {
 	lw.inner.Output(2, fmt.Sprint(v...))
 }
 
-func (lw *loggerWrap) Warnf(format string, v ...interface{}) {
+func (lw *LoggerWrap) Warnf(format string, v ...interface{}) {
 	if WARN < lw.level {
 		return
 	}
@@ -137,7 +137,7 @@ func (lw *loggerWrap) Warnf(format string, v ...interface{}) {
 	lw.inner.Output(2, fmt.Sprintf(format, v...))
 }
 
-func (lw *loggerWrap) Error(v ...interface{}) {
+func (lw *LoggerWrap) Error(v ...interface{}) {
 	if ERROR < lw.level {
 		return
 	}
@@ -145,7 +145,7 @@ func (lw *loggerWrap) Error(v ...interface{}) {
 	lw.inner.Output(2, fmt.Sprint(v...))
 }
 
-func (lw *loggerWrap) Errorf(format string, v ...interface{}) {
+func (lw *LoggerWrap) Errorf(format string, v ...interface{}) {
 	if ERROR < lw.level {
 		return
 	}

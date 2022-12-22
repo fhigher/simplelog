@@ -30,10 +30,8 @@ func TestFileLogger(t *testing.T) {
 }
 
 func TestStdLogger(t *testing.T) {
-	lw, err := StdLogger()
-	if nil != err {
-		t.Fatal(err)
-	}
+	lw := StdLogger()
+	
 
 	lw.SetLevel(WARN)
 
@@ -52,5 +50,6 @@ func TestStdLogger(t *testing.T) {
 	lw.Error("error log")
 	lw.Errorf("%s", "test error log")
 
-	lw.Close()
+
+	// lw.Close()
 }
